@@ -1,0 +1,4 @@
+# 가상환경 ignore
+
+ch03/ch03_env/
+ch04/ch04_env/
