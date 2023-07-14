@@ -58,7 +58,7 @@ def getTextFromGPT(messages):
     system_message = response["choices"][0]["message"]
     return system_message["content"]
 
-# DALLE.2에게 질문/그림 URL 받기
+# DALLE.2 에게 질문/그림 URL 받기
 def getImageURLFromDALLE(messages):   
     response = openai.Image.create(prompt=messages,n=1,size="512x512")
     image_url = response['data'][0]['url']
