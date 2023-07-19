@@ -19,8 +19,8 @@ def lambda_handler(event, context):
     # 카카오 정보 저장
     kakaorequest = json.loads(event['body'])
     # 응답 결과를 저장하기 위한 텍스트 파일 생성
-    cwd = os.getcwd()
-    filename = cwd + "/tmp/botlog.txt"
+
+    filename ="/tmp/botlog.txt"
     if not os.path.exists(filename):
         with open(filename, "w") as f:
             f.write("")
