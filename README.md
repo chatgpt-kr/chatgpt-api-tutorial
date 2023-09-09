@@ -12,7 +12,7 @@
 
 김준성 / (wnstlddl@gmail.com)  : 자율주행 개발자  
 브라이스유 / (nlp.consulting777@gmail.com) :  딥 러닝 자연어 처리 연구원  
-안상준 / (dailybugle@naver.com) : AI 분야 교수
+안상준 / (dailybugle@naver.com) : AI 분야 강사 및 겸임 교수
 
 
 ## 실습 코드 수정 내용
