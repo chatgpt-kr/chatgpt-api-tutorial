@@ -11,7 +11,7 @@
 ## 저자 (Authors)
 
 김준성 / (wnstlddl@gmail.com)  : 자율주행 개발자  
-브라이스유 : 딥 러닝 자연어 처리 연구원  
+브라이스유 / (nlp.consuting777@gmail.com) : 딥 러닝 자연어 처리 개발자
 안상준 / (dailybugle@naver.com) : AI 분야 교수
 
 
