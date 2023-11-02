@@ -12,32 +12,32 @@ def lambda_handler(event, context):
     
     if not result['message']['from']['is_bot']:
                     
-        # ¸Ş¼¼Áö¸¦ º¸³½ »ç¶÷ÀÇ chat ID 
+        # ë©”ì„¸ì§€ë¥¼ ë³´ë‚¸ ì‚¬ëŒì˜ chat ID 
         chat_id = str(result['message']['chat']['id'])
 
-        # ÇØ´ç ¸Ş¼¼ÁöÀÇ ID
+        # í•´ë‹¹ ë©”ì„¸ì§€ì˜ ID
         msg_id = str(int(result['message']['message_id']))
                 
-        # ¸¸¾à ±×¸² »ı¼ºÀ» ¿äÃ»ÇÏ¸é
+        # ë§Œì•½ ê·¸ë¦¼ ìƒì„±ì„ ìš”ì²­í•˜ë©´
         if '/img' in result['message']['text']:
             prompt = result['message']['text'].replace("/img", "")
-            # DALL.E 2·ÎºÎÅÍ »ı¼ºÇÑ ÀÌ¹ÌÁö URL ¹Ş±â
+            # DALL.E 2ë¡œë¶€í„° ìƒì„±í•œ ì´ë¯¸ì§€ URL ë°›ê¸°
             bot_response = getImageURLFromDALLE(prompt)
-            # ÀÌ¹ÌÁö ÅÚ·¹±×·¥ ¹æ¿¡ º¸³»±â
+            # ì´ë¯¸ì§€ í…”ë ˆê·¸ë¨ ë°©ì— ë³´ë‚´ê¸°
             print(sendPhoto(chat_id,bot_response, msg_id))
-        # ¸¸¾à chatGPTÀÇ ´äº¯À» ¿äÃ»ÇÏ¸é
+        # ë§Œì•½ chatGPTì˜ ë‹µë³€ì„ ìš”ì²­í•˜ë©´
         if '/ask' in result['message']['text']:
             prompt = result['message']['text'].replace("/ask", "")
-            # ChatGPT·ÎºÎÅÍ ´äº¯ ¹Ş±â
+            # ChatGPTë¡œë¶€í„° ë‹µë³€ ë°›ê¸°
             bot_response = getTextFromGPT(prompt)
-            # ´äº¯ ÅÚ·¹±×·¥ ¹æ¿¡ º¸³»±â
+            # ë‹µë³€ í…”ë ˆê·¸ë¨ ë°©ì— ë³´ë‚´ê¸°
             print(sendMessage(chat_id, bot_response,msg_id))
     
     return 0
 
-###### ±â´É ÇÔ¼ö ±¸Çö ´Ü°è ######
+###### ê¸°ëŠ¥ í•¨ìˆ˜ êµ¬í˜„ ë‹¨ê³„ ######
 
-# ¸Ş¼¼Áö Àü¼Û
+# ë©”ì„¸ì§€ ì „ì†¡
 def sendMessage(chat_id, text,msg_id):
     data = {
         'chat_id': chat_id,
@@ -49,7 +49,7 @@ def sendMessage(chat_id, text,msg_id):
     response = http.request('POST',url ,fields=data)
     return json.loads(response.data.decode('utf-8'))
 
-# »çÁø Àü¼Û
+# ì‚¬ì§„ ì „ì†¡
 def sendPhoto(chat_id, image_url,msg_id):
     data = {
         'chat_id': chat_id,
@@ -61,15 +61,15 @@ def sendPhoto(chat_id, image_url,msg_id):
     response = http.request('POST',url ,fields=data)
     return json.loads(response.data.decode('utf-8'))
 
-# ChatGPT¿¡°Ô Áú¹®/´äº¯¹Ş±â
+# ChatGPTì—ê²Œ ì§ˆë¬¸/ë‹µë³€ë°›ê¸°
 def getTextFromGPT(messages):
     messages_prompt = [{"role": "system", "content": 'You are a thoughtful assistant. Respond to all input in 25 words and answer in korea'}]
-    messages_prompt += [{"role": "system", "content": messages}]
+    messages_prompt += [{"role": "user", "content": messages}]
     response = openai.ChatCompletion.create(model="gpt-3.5-turbo", messages=messages_prompt)
     system_message = response["choices"][0]["message"]
     return system_message["content"]
 
-# DALLE.2¿¡°Ô Áú¹®/±×¸² URL ¹Ş±â
+# DALLE.2ì—ê²Œ ì§ˆë¬¸/ê·¸ë¦¼ URL ë°›ê¸°
 def getImageURLFromDALLE(messages):
     response = openai.Image.create(prompt=messages,n=1,size="512x512")
     image_url = response['data'][0]['url']
