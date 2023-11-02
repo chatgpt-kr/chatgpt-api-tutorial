@@ -46,7 +46,7 @@ def timeover():
 # ChatGPT에게 질문/답변 받기
 def getTextFromGPT(prompt):
     messages_prompt = [{"role": "system", "content": 'You are a thoughtful assistant. Respond to all input in 25 words and answer in korea'}]
-    messages_prompt += [{"role": "system", "content": prompt}]
+    messages_prompt += [{"role": "user", "content": prompt}]
     response = openai.ChatCompletion.create(model="gpt-3.5-turbo", messages=messages_prompt)
     message = response["choices"][0]["message"]["content"]
     return message
@@ -122,10 +122,12 @@ def responseOpenAI(request,response_queue,filename):
             last_update = f.read()
         # 텍스트 파일 내 저장된 정보가 있을 경우
         if len(last_update.split())>1:
-            kind, bot_res, prompt = last_update.split()[0],last_update.split()[1],last_update.split()[2]  
+            kind = last_update.split()[0]  
             if kind == "img":
+                bot_res, prompt = last_update.split()[1],last_update.split()[2]
                 response_queue.put(imageResponseFormat(bot_res,prompt))
             else:
+                bot_res = last_update[4:]
                 response_queue.put(textResponseFormat(bot_res))
             dbReset(filename)
 
@@ -146,7 +148,7 @@ def responseOpenAI(request,response_queue,filename):
         bot_res = getTextFromGPT(prompt)
         response_queue.put(textResponseFormat(bot_res))
 
-        save_log = "ask"+ " " + str(bot_res) + " " + str(prompt)
+        save_log = "ask"+ " " + str(bot_res)
         with open(filename, 'w') as f:
             f.write(save_log)
             
