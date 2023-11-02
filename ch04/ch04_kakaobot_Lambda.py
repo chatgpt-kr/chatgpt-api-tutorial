@@ -1,4 +1,4 @@
-###### ±âº» Á¤º¸ ¼³Á¤ ´Ü°è #######
+###### ê¸°ë³¸ ì •ë³´ ì„¤ì • ë‹¨ê³„ #######
 import json
 import openai
 import threading
@@ -9,16 +9,16 @@ import os
 # OpenAI API KEY
 openai.api_key = os.environ['OPENAI_API']
 
-###### ¸ŞÀÎ ÇÔ¼ö ´Ü°è #######
+###### ë©”ì¸ í•¨ìˆ˜ ë‹¨ê³„ #######
 
-# ¸ŞÀÎ ÇÔ¼ö
+# ë©”ì¸ í•¨ìˆ˜
 def lambda_handler(event, context):
 
     run_flag = False
     start_time = time.time()
-    # Ä«Ä«¿À Á¤º¸ ÀúÀå
+    # ì¹´ì¹´ì˜¤ ì •ë³´ ì €ì¥
     kakaorequest = json.loads(event['body'])
-    # ÀÀ´ä °á°ú¸¦ ÀúÀåÇÏ±â À§ÇÑ ÅØ½ºÆ® ÆÄÀÏ »ı¼º
+    # ì‘ë‹µ ê²°ê³¼ë¥¼ ì €ì¥í•˜ê¸° ìœ„í•œ í…ìŠ¤íŠ¸ íŒŒì¼ ìƒì„±
 
     filename ="/tmp/botlog.txt"
     if not os.path.exists(filename):
@@ -27,23 +27,23 @@ def lambda_handler(event, context):
     else:
         print("File Exists")    
 
-    # ´äº¯ »ı¼º ÇÔ¼ö ½ÇÇà
+    # ë‹µë³€ ìƒì„± í•¨ìˆ˜ ì‹¤í–‰
     response_queue = q.Queue()
     request_respond = threading.Thread(target=responseOpenAI,
                                         args=(kakaorequest, response_queue,filename))
     request_respond.start()
 
-    # ´äº¯ »ı¼º ½Ã°£ Ã¼Å©
+    # ë‹µë³€ ìƒì„± ì‹œê°„ ì²´í¬
     while (time.time() - start_time < 3.5):
         if not response_queue.empty():
-            # 3.5ÃÊ ¾È¿¡ ´äº¯ÀÌ ¿Ï¼ºµÇ¸é ¹Ù·Î °ª ¸®ÅÏ
+            # 3.5ì´ˆ ì•ˆì— ë‹µë³€ì´ ì™„ì„±ë˜ë©´ ë°”ë¡œ ê°’ ë¦¬í„´
             response = response_queue.get()
             run_flag= True
             break
-        # ¾ÈÁ¤ÀûÀÎ ±¸µ¿À» À§ÇÑ µô·¹ÀÌ Å¸ÀÓ ¼³Á¤
+        # ì•ˆì •ì ì¸ êµ¬ë™ì„ ìœ„í•œ ë”œë ˆì´ íƒ€ì„ ì„¤ì •
         time.sleep(0.01)
 
-    # 3.5ÃÊ ³» ´äº¯ÀÌ »ı¼ºµÇÁö ¾ÊÀ» °æ¿ì
+    # 3.5ì´ˆ ë‚´ ë‹µë³€ì´ ìƒì„±ë˜ì§€ ì•Šì„ ê²½ìš°
     if run_flag== False:     
         response = timeover()
 
@@ -55,23 +55,25 @@ def lambda_handler(event, context):
         }
     }
 
-# ´äº¯/»çÁø ¿äÃ» ¹× ÀÀ´ä È®ÀÎ ÇÔ¼ö
+# ë‹µë³€/ì‚¬ì§„ ìš”ì²­ ë° ì‘ë‹µ í™•ì¸ í•¨ìˆ˜
 def responseOpenAI(request,response_queue,filename):
-    # »ç¿ëÀÚ´Ù ¹öÆ°À» Å¬¸¯ÇÏ¿© ´äº¯ ¿Ï¼º ¿©ºÎ¸¦ ´Ù½Ã ºÃÀ» ½Ã
-    if '»ı°¢ ´Ù ³¡³µ³ª¿ä?' in request["userRequest"]["utterance"]:
-        # ÅØ½ºÆ® ÆÄÀÏ ¿­±â
+    # ì‚¬ìš©ìë‹¤ ë²„íŠ¼ì„ í´ë¦­í•˜ì—¬ ë‹µë³€ ì™„ì„± ì—¬ë¶€ë¥¼ ë‹¤ì‹œ ë´¤ì„ ì‹œ
+    if 'ìƒê° ë‹¤ ëë‚¬ë‚˜ìš”?' in request["userRequest"]["utterance"]:
+        # í…ìŠ¤íŠ¸ íŒŒì¼ ì—´ê¸°
         with open(filename) as f:
             last_update = f.read()
-        # ÅØ½ºÆ® ÆÄÀÏ ³» ÀúÀåµÈ Á¤º¸°¡ ÀÖÀ» °æ¿ì
+        # í…ìŠ¤íŠ¸ íŒŒì¼ ë‚´ ì €ì¥ëœ ì •ë³´ê°€ ìˆì„ ê²½ìš°
         if len(last_update.split())>1:
-            kind, bot_res, prompt = last_update.split()[0],last_update.split()[1],last_update.split()[2]  
+            kind = last_update.split()[0]  
             if kind == "img":
+                bot_res, prompt = last_update.split()[1],last_update.split()[2]
                 response_queue.put(imageResponseFormat(bot_res,prompt))
             else:
+                bot_res = last_update[4:]
                 response_queue.put(textResponseFormat(bot_res))
             dbReset(filename)
 
-    # ÀÌ¹ÌÁö »ı¼ºÀ» ¿äÃ»ÇÑ °æ¿ì
+    # ì´ë¯¸ì§€ ìƒì„±ì„ ìš”ì²­í•œ ê²½ìš°
     elif '/img' in request["userRequest"]["utterance"]:
         dbReset(filename)
         prompt = request["userRequest"]["utterance"].replace("/img", "")
@@ -81,71 +83,71 @@ def responseOpenAI(request,response_queue,filename):
         with open(filename, 'w') as f:
             f.write(save_log)
 
-    # ChatGPT ´äº¯À» ¿äÃ»ÇÑ °æ¿ì
+    # ChatGPT ë‹µë³€ì„ ìš”ì²­í•œ ê²½ìš°
     elif '/ask' in request["userRequest"]["utterance"]:
         dbReset(filename)
         prompt = request["userRequest"]["utterance"].replace("/ask", "")
         bot_res = getTextFromGPT(prompt)
         response_queue.put(textResponseFormat(bot_res))
 
-        save_log = "ask"+ " " + str(bot_res) + " " + str(prompt)
+        save_log = "ask"+ " " + str(bot_res)
         with open(filename, 'w') as f:
             f.write(save_log)
             
-    #¾Æ¹« ´äº¯ ¿äÃ»ÀÌ ¾ø´Â Ã¤ÆÃÀÏ °æ¿ì
+    #ì•„ë¬´ ë‹µë³€ ìš”ì²­ì´ ì—†ëŠ” ì±„íŒ…ì¼ ê²½ìš°
     else:
-        # ±âº» response °ª
+        # ê¸°ë³¸ response ê°’
         base_response = {'version': '2.0', 'template': {'outputs': [], 'quickReplies': []}}
         response_queue.put(base_response)
 
-###### ±â´É ±¸Çö ´Ü°è #######
+###### ê¸°ëŠ¥ êµ¬í˜„ ë‹¨ê³„ #######
 
-# ¸Ş¼¼Áö Àü¼Û
+# ë©”ì„¸ì§€ ì „ì†¡
 def textResponseFormat(bot_response):
     response = {'version': '2.0', 'template': {
     'outputs': [{"simpleText": {"text": bot_response}}], 'quickReplies': []}}
     return response
 
-# »çÁø Àü¼Û
+# ì‚¬ì§„ ì „ì†¡
 def imageResponseFormat(bot_response,prompt):
-    output_text = prompt+"³»¿ë¿¡ °üÇÑ ÀÌ¹ÌÁö ÀÔ´Ï´Ù"
+    output_text = prompt+"ë‚´ìš©ì— ê´€í•œ ì´ë¯¸ì§€ ì…ë‹ˆë‹¤"
     response = {'version': '2.0', 'template': {
     'outputs': [{"simpleImage": {"imageUrl": bot_response,"altText":output_text}}], 'quickReplies': []}}
     return response
 
-# ÀÀ´ä ÃÊ°ú½Ã ´äº¯
+# ì‘ë‹µ ì´ˆê³¼ì‹œ ë‹µë³€
 def timeover():
     response = {"version":"2.0","template":{
       "outputs":[
          {
             "simpleText":{
-               "text":"¾ÆÁ÷ Á¦°¡ »ı°¢ÀÌ ³¡³ªÁö ¾Ê¾Ò¾î¿ä??\nÀá½ÃÈÄ ¾Æ·¡ ¸»Ç³¼±À» ´­·¯ÁÖ¼¼¿ä?"
+               "text":"ì•„ì§ ì œê°€ ìƒê°ì´ ëë‚˜ì§€ ì•Šì•˜ì–´ìš”??\nì ì‹œí›„ ì•„ë˜ ë§í’ì„ ì„ ëˆŒëŸ¬ì£¼ì„¸ìš”?"
             }
          }
       ],
       "quickReplies":[
          {
             "action":"message",
-            "label":"»ı°¢ ´Ù ³¡³µ³ª¿ä??",
-            "messageText":"»ı°¢ ´Ù ³¡³µ³ª¿ä?"
+            "label":"ìƒê° ë‹¤ ëë‚¬ë‚˜ìš”??",
+            "messageText":"ìƒê° ë‹¤ ëë‚¬ë‚˜ìš”?"
          }]}}
     return response
 
-# ChatGPT¿¡°Ô Áú¹®/´äº¯ ¹Ş±â
+# ChatGPTì—ê²Œ ì§ˆë¬¸/ë‹µë³€ ë°›ê¸°
 def getTextFromGPT(prompt):
     messages_prompt = [{"role": "system", "content": 'You are a thoughtful assistant. Respond to all input in 25 words and answer in korea'}]
-    messages_prompt += [{"role": "system", "content": prompt}]
+    messages_prompt += [{"role": "user", "content": prompt}]
     response = openai.ChatCompletion.create(model="gpt-3.5-turbo", messages=messages_prompt)
     message = response["choices"][0]["message"]["content"]
     return message
 
-# DALLE.2¿¡°Ô Áú¹®/±×¸² URL ¹Ş±â
+# DALLE.2ì—ê²Œ ì§ˆë¬¸/ê·¸ë¦¼ URL ë°›ê¸°
 def getImageURLFromDALLE(prompt):
     response = openai.Image.create(prompt=prompt,n=1,size="512x512")
     image_url = response['data'][0]['url']
     return image_url
 
-# ÅØ½ºÆ®ÆÄÀÏ ÃÊ±âÈ­
+# í…ìŠ¤íŠ¸íŒŒì¼ ì´ˆê¸°í™”
 def dbReset(filename):
     with open(filename, 'w') as f:
         f.write("")
