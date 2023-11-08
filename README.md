@@ -27,3 +27,11 @@ streamlit-audiorecorder 패키지 변경으로 인한 신규버전 음성비서 
 2) 신규 실습코드를 활용 시 (ch03/ch03_voicebot_ver2.py)
    - 실습 코드 : ch03/ch03_voicebot_ver2.py
    - `pip install streamlit-audiorecorder` 명령어로 설치(책 P.88) 
+
+### openAI 패키지 설치 명령어 변경(23.11.08)
+23년 11월 7일 부로 openAI 가 대대적인 업데이트를 하면서 API 코드 문법이 변경되었습니다. 
+책의 내용 및 예제코드와 동일한 실습을 위해선 아래의 명령어로 openai 패키지 설치를 진행합니다.
+   - `pip install openai==0.28.1`
+
+만약 이미 신규버전(1.1.1) 설치를 하셨다면 먼저 아래 명령어로 패키지 삭제 후 다시 설치를 진행합니다.
+   - `pip uninstall openai`
