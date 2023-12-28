@@ -2,15 +2,15 @@
 import streamlit as st
 # audiorecorder 패키지 추가
 from audiorecorder import audiorecorder
-# OpenAI 패키기 추가
+# OpenAI 패키지 추가
 import openai
 # 파일 삭제를 위한 패키지 추가
 import os
-# 시간 정보를 위핸 패키지 추가
+# 시간 정보를 위한 패키지 추가
 from datetime import datetime
-# TTS 패키기 추가
+# TTS 패키지 추가
 from gtts import gTTS
-# 음원파일 재생을 위한 패키지 추가
+# 음원 파일 재생을 위한 패키지 추가
 import base64
 
 ##### 기능 구현 함수 #####
@@ -20,7 +20,7 @@ def STT(audio):
     audio.export(filename, format="mp3")
     # 음원 파일 열기
     audio_file = open(filename, "rb")
-    #Whisper 모델을 활용해 텍스트 얻기
+    # Whisper 모델을 활용해 텍스트 얻기
     transcript = openai.Audio.transcribe("whisper-1", audio_file)
     audio_file.close()
     # 파일 삭제
@@ -38,7 +38,7 @@ def TTS(response):
     tts = gTTS(text=response,lang="ko")
     tts.save(filename)
 
-    # 음원 파일 자동 재성
+    # 음원 파일 자동 재생
     with open(filename, "rb") as f:
         data = f.read()
         b64 = base64.b64encode(data).decode()
@@ -129,7 +129,7 @@ def main():
         # 오른쪽 영역 작성
         st.subheader("질문/답변")
         if  (audio.duration_seconds > 0)  and (st.session_state["check_reset"]==False):
-            #ChatGPT에게 답변 얻기
+            # ChatGPT에게 답변 얻기
             response = ask_gpt(st.session_state["messages"], model)
 
             # GPT 모델에 넣을 프롬프트를 위해 답변 내용 저장
