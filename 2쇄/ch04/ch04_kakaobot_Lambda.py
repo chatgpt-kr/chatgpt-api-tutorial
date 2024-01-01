@@ -141,9 +141,14 @@ def getTextFromGPT(messages):
     message = response.choices[0].message.content
     return message
 
-# DALLE.2에게 질문/그림 URL 받기
+# DALLE 에게 질문/그림 URL 받기
 def getImageURLFromDALLE(messages):   
-    response = client.images.generate(prompt=messages,n=1,size="512x512")
+    response = client.images.generate(
+    model="dall-e-3",
+    prompt=messages,
+    size="1024x1024",
+    quality="standard",
+    n=1)
     image_url = response.data[0].url
     return image_url
 

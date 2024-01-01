@@ -25,7 +25,7 @@ def lambda_handler(event, context):
         # 만약 그림 생성을 요청하면
         if '/img' in result['message']['text']:
             prompt = result['message']['text'].replace("/img", "")
-            # DALL.E 2로부터 생성한 이미지 URL 받기
+            # DALL.E로부터 생성한 이미지 URL 받기
             bot_response = getImageURLFromDALLE(prompt)
             # 이미지 텔레그램 방에 보내기
             print(sendPhoto(chat_id,bot_response, msg_id))
@@ -73,8 +73,13 @@ def getTextFromGPT(messages):
     system_message = response.choices[0].message.content
     return system_message
 
-# DALLE.2에게 질문/그림 URL 받기
+# DALLE 에게 질문/그림 URL 받기
 def getImageURLFromDALLE(messages):   
-    response = client.images.generate(prompt=messages,n=1,size="512x512")
+    response = client.images.generate(
+    model="dall-e-3",
+    prompt=messages,
+    size="1024x1024",
+    quality="standard",
+    n=1)
     image_url = response.data[0].url
     return image_url
