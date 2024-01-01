@@ -2,40 +2,35 @@
 import streamlit as st
 # audiorecorder 패키지 추가
 from audiorecorder import audiorecorder
-# OpenAI 패키기 추가
+# OpenAI 패키지 추가
 import openai
 # 파일 삭제를 위한 패키지 추가
 import os
-# 시간 정보를 위핸 패키지 추가
+# 시간 정보를 위한 패키지 추가
 from datetime import datetime
 # TTS 패키기 추가
 from gtts import gTTS
-# 음원파일 재생을 위한 패키지 추가
+# 음원 파일 재생을 위한 패키지 추가
 import base64
 
 ##### 기능 구현 함수 #####
-def STT(audio,apikey):
+def STT(audio):
     # 파일 저장
     filename='input.mp3'
     audio.export(filename, format="mp3")
-
     # 음원 파일 열기
     audio_file = open(filename, "rb")
-    #Whisper 모델을 활용해 텍스트 얻기
-    client = openai.OpenAI(api_key = apikey)
-    respons = client.audio.transcriptions.create(model = "whisper-1", file = audio_file)
+    # Whisper 모델을 활용해 텍스트 얻기
+    transcript = openai.Audio.transcribe("whisper-1", audio_file)
     audio_file.close()
     # 파일 삭제
     os.remove(filename)
-    return respons.text
+    return transcript["text"]
 
-def ask_gpt(prompt, model, apikey):
-    client = openai.OpenAI(api_key = apikey)
-    response = client.chat.completions.create(
-    model=model,
-    messages=prompt)
-    gptResponse = response.choices[0].message.content
-    return gptResponse
+def ask_gpt(prompt, model):
+    response = openai.ChatCompletion.create(model=model, messages=prompt)
+    system_message = response["choices"][0]["message"]
+    return system_message["content"]
 
 def TTS(response):
     # gTTS 를 활용하여 음성 파일 생성
@@ -43,7 +38,7 @@ def TTS(response):
     tts = gTTS(text=response,lang="ko")
     tts.save(filename)
 
-    # 음원 파일 자동 재성
+    # 음원 파일 자동 재생생
     with open(filename, "rb") as f:
         data = f.read()
         b64 = base64.b64encode(data).decode()
@@ -66,9 +61,6 @@ def main():
     # session state 초기화
     if "chat" not in st.session_state:
         st.session_state["chat"] = []
-    
-    if "OPENAI_API" not in st.session_state:
-        st.session_state["OPENAI_API"] = ""
 
     if "messages" not in st.session_state:
         st.session_state["messages"] = [{"role": "system", "content": "You are a thoughtful assistant. Respond to all input in 25 words and answer in korea"}]
@@ -98,7 +90,7 @@ def main():
     with st.sidebar:
 
         # Open AI API 키 입력받기
-        st.session_state["OPENAI_API"] = st.text_input(label="OPENAI API 키", placeholder="Enter Your API Key", value="", type="password")
+        openai.api_key = st.text_input(label="OPENAI API 키", placeholder="Enter Your API Key", value="", type="password")
 
         st.markdown("---")
 
@@ -125,7 +117,7 @@ def main():
             # 음성 재생 
             st.audio(audio.export().read())
             # 음원 파일에서 텍스트 추출
-            question = STT(audio,st.session_state["OPENAI_API"])
+            question = STT(audio)
 
             # 채팅을 시각화하기 위해 질문 내용 저장
             now = datetime.now().strftime("%H:%M")
@@ -137,8 +129,8 @@ def main():
         # 오른쪽 영역 작성
         st.subheader("질문/답변")
         if  (audio.duration_seconds > 0)  and (st.session_state["check_reset"]==False):
-            #ChatGPT에게 답변 얻기
-            response = ask_gpt(st.session_state["messages"], model, st.session_state["OPENAI_API"])
+            # ChatGPT에게 답변 얻기
+            response = ask_gpt(st.session_state["messages"], model)
 
             # GPT 모델에 넣을 프롬프트를 위해 답변 내용 저장
             st.session_state["messages"] = st.session_state["messages"]+ [{"role": "system", "content": response}]
