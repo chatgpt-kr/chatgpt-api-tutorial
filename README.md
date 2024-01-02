@@ -40,9 +40,9 @@
      ```
   3) FFmpeg 설치
     이어서 아래 명령어를 입력하여 FFmpeg 를 설치합니다.
-    ```
-    brew install ffmpeg
-    ```
+     ```
+     brew install ffmpeg
+     ```
 ### 1쇄 수정사항
 #### 음성비서 프로그램 실습 코드 추가(23.09.09)
 streamlit-audiorecorder 패키지 변경으로 인한 신규버전 음성비서 프로그램 실습파일 추가하였습니다.
