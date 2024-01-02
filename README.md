@@ -19,12 +19,24 @@
 ### 2쇄 수정사항
 #### FFmpeg 설치 방법
 - Windows
+  1) Chocolatey 설치
+     window powershell을 관리자 권한으로 실행합니다.([windosws] + [S] 키 입력 -> window powershell 검색 -> 마우스 우클릭 -> 관리자 권한으로 실행 클릭)
+     아래 명령어를 입력하여 Chocolatey 를 설치합니다.
+     
+     'Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))'
+  3) FFmpeg 설치
+     이어서 아래 명령어를 입력하여 FFmpeg 를 설치합니다.
+
+     `choco install ffmpeg`
+     
 - Mac
   1) Homebrew 설치
      터미널 창 실행 후 아래 명령어를 입력하여 Home brew를 설치합니다.
+     
      `/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"`
   3) FFmpeg 설치
-    터미널 창에 아래 명령어를 입력하여 FFmpeg 를 설치합니다.
+    이어서 아래 명령어를 입력하여 FFmpeg 를 설치합니다.
+
     `brew install ffmpeg`
 ### 1쇄 수정사항
 #### 음성비서 프로그램 실습 코드 추가(23.09.09)
